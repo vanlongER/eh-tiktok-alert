@@ -241,6 +241,15 @@ async function fetchTickets(tabId, prev) {
 }
 
 // ---------- quét chính ----------
+async function killOrphanTab() {
+  try {
+    const o = await chrome.storage.local.get({ scanTab: 0 });
+    if (o.scanTab) { try { await chrome.tabs.remove(o.scanTab); } catch (e) {} await chrome.storage.local.set({ scanTab: 0 }); }
+  } catch (e) {}
+}
+chrome.runtime.onStartup.addListener(killOrphanTab);
+killOrphanTab();
+
 async function scan(manual) {
   const cfg = await getCfg();
   if (!cfg.token || !cfg.chatId) {
@@ -249,12 +258,14 @@ async function scan(manual) {
     return { ok: false, err: 'Chưa cài Telegram' };
   }
   const L = await chrome.storage.local.get({ scanning: 0, state: null });
-  if (!manual && Date.now() - L.scanning < 3 * 60 * 1000) return { ok: false, err: 'Đang quét' };
+  if (Date.now() - L.scanning < (manual ? 60 : 180) * 1000) return { ok: false, err: 'Đang quét' };
+  await killOrphanTab();
   await chrome.storage.local.set({ scanning: Date.now() });
 
   let tab = null, pend = null, appeal = null, tix = null;
   try {
     tab = await chrome.tabs.create({ url: URL_PENDING, active: false });
+    await chrome.storage.local.set({ scanTab: tab.id });
     await waitComplete(tab.id);
     pend = await runInTab(tab.id, false);
     if (pend && !pend.loggedOut && !pend.notRendered) {
@@ -268,7 +279,7 @@ async function scan(manual) {
     await chrome.storage.local.set({ lastScan: { at: Date.now(), status: 'Lỗi quét: ' + e } });
   } finally {
     if (tab) { try { await chrome.tabs.remove(tab.id); } catch (e) {} }
-    await chrome.storage.local.set({ scanning: 0 });
+    await chrome.storage.local.set({ scanning: 0, scanTab: 0 });
   }
 
   const now = Date.now();

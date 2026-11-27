@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "EH TikTok Báo Trả Hàng",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "Quét Quản lý trả hàng của TikTok Shop (EasyHomeVN) và báo Telegram khi có trả hàng mới hoặc TikTok nhắn trong khiếu nại.",
   "permissions": [
     "alarms",
