@@ -1,5 +1,5 @@
 {
-  "version": "2.0.3",
+  "version": "2.0.4",
   "files": [
     "manifest.json",
     "background.js",
@@ -7,5 +7,5 @@
     "options.html",
     "options.js"
   ],
-  "notes": "Sửa lỗi tab Nhật ký phiếu bị mở dồn: tự đóng tab sót, không quét chồng."
+  "notes": "Tin tổng quan giờ liệt kê từng mã đơn + trạng thái vận chuyển."
 }

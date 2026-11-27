@@ -173,6 +173,25 @@ const leftMin = (s) => {
   return (+d || 0) * 1440 + (+h || 0) * 60 + (+m || 0);
 };
 
+
+// danh sách có mã đơn cho tin tổng quan
+function overview(pend, appeal) {
+  const L = [];
+  const cards = pend.cards || [];
+  const act = cards.filter((c) => c.ship === 'Đã giao' || !c.ship);
+  const wait = cards.length - act.length;
+  L.push('↩️ Trả hàng cần xử lý: ' + act.length + (wait > 0 ? '  (còn ' + wait + ' đơn chưa giao về shop, chưa báo)' : ''));
+  for (const c of act) {
+    const st = c.ship ? '✅ ĐVVC đã giao về shop' : '💸 chỉ hoàn tiền';
+    L.push('   • <code>' + c.id + '</code> · ' + esc(c.reason || c.type || '') + ' · ' + c.amount + ' · ' + st);
+  }
+  L.push('📎 Khiếu nại cần bằng chứng: ' + appeal.evidenceCount);
+  for (const c of appeal.evidenceCards || []) L.push('   • <code>' + c.id + '</code>' + (c.left ? ' · còn ' + esc(c.left) : ''));
+  L.push('💬 TikTok phản hồi mới: ' + appeal.replyCount);
+  for (const c of appeal.replyCards || []) L.push('   • <code>' + c.id + '</code>' + (c.left ? ' · còn ' + esc(c.left) : ''));
+  return L;
+}
+
 async function getCfg() {
   const c = await chrome.storage.sync.get({ token: '', chatId: '', threadId: '', intervalMin: 10, heartbeat: true });
   return c;
@@ -313,9 +332,7 @@ async function scan(manual) {
   if (st.first) {
     msgs.push({
       text: card('✅ BẮT ĐẦU THEO DÕI EASYHOMEVN', [
-        '↩️ Trả hàng chờ bạn: ' + pend.pendingCount,
-        '📎 Khiếu nại cần bằng chứng: ' + appeal.evidenceCount,
-        '💬 TikTok phản hồi mới: ' + appeal.replyCount,
+        ...overview(pend, appeal),
         '',
         'Trả hàng chỉ báo khi ĐVVC đã giao hàng về shop.'
       ], URL_PENDING, 'Mở trả hàng')
@@ -411,7 +428,7 @@ async function scan(manual) {
   const d = new Date(now + 7 * 3600 * 1000);
   const day = d.toISOString().slice(0, 10);
   if (cfg.heartbeat && !st.first && st.lastHeartbeatDay !== day && d.getUTCHours() >= 8) {
-    msgs.push({ text: card('👀 ĐANG THEO DÕI OK', ['↩️ Trả hàng chờ bạn: ' + pend.pendingCount, '📎 Khiếu nại cần bằng chứng: ' + appeal.evidenceCount, '💬 TikTok phản hồi mới: ' + appeal.replyCount]) });
+    msgs.push({ text: card('👀 ĐANG THEO DÕI OK', overview(pend, appeal)) });
     st.lastHeartbeatDay = day;
   }
 
