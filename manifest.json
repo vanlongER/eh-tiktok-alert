@@ -1,15 +1,25 @@
 {
   "manifest_version": 3,
   "name": "EH TikTok Báo Trả Hàng",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "Quét Quản lý trả hàng của TikTok Shop (EasyHomeVN) và báo Telegram khi có trả hàng mới hoặc TikTok nhắn trong khiếu nại.",
-  "permissions": ["alarms", "storage", "scripting", "tabs"],
+  "permissions": [
+    "alarms",
+    "storage",
+    "scripting",
+    "tabs"
+  ],
   "host_permissions": [
     "https://seller-vn.tiktok.com/*",
     "https://api.telegram.org/*",
     "https://raw.githubusercontent.com/*"
   ],
-  "background": { "service_worker": "background.js" },
+  "background": {
+    "service_worker": "background.js"
+  },
   "options_page": "options.html",
-  "action": { "default_title": "EH TikTok Báo Trả Hàng – mở Cài đặt" }
+  "action": {
+    "default_title": "EH TikTok Báo Trả Hàng",
+    "default_popup": "popup.html"
+  }
 }

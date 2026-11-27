@@ -1,11 +1,13 @@
 {
-  "version": "2.0.5",
+  "version": "2.0.6",
   "files": [
     "manifest.json",
     "background.js",
     "updater.js",
     "options.html",
-    "options.js"
+    "options.js",
+    "popup.html",
+    "popup.js"
   ],
-  "notes": "Sửa icon thanh công cụ: bấm mở Cài đặt, hiện icon EH xanh."
+  "notes": "Bấm icon mở bảng nhỏ (không phụ thuộc service worker), khởi động nhẹ hơn."
 }

@@ -20,8 +20,7 @@ function drawIcon(size, alert) {
 function setIcon(alert) {
   try { chrome.action.setIcon({ imageData: { 16: drawIcon(16, alert), 32: drawIcon(32, alert), 48: drawIcon(48, alert) } }); } catch (e) {}
 }
-setIcon(false);
-try { chrome.action.setBadgeBackgroundColor({ color: '#e53935' }); } catch (e) {}
+function initAction() { setIcon(false); try { chrome.action.setBadgeBackgroundColor({ color: '#e53935' }); } catch (e) {} }
 // EH TikTok Báo Trả Hàng - MV3 service worker
 // Quét định kỳ trang Quản lý trả hàng (chỉ ĐỌC), báo Telegram. Không bấm gì trên Seller Center.
 
@@ -267,7 +266,6 @@ async function killOrphanTab() {
   } catch (e) {}
 }
 chrome.runtime.onStartup.addListener(killOrphanTab);
-killOrphanTab();
 
 async function scan(manual) {
   const cfg = await getCfg();
@@ -481,10 +479,9 @@ async function schedule() {
   chrome.alarms.create('update', { delayInMinutes: 2, periodInMinutes: 60 });
   chrome.alarms.create('scan', { delayInMinutes: 1, periodInMinutes: Math.max(5, Number(cfg.intervalMin) || 10) });
 }
-chrome.runtime.onInstalled.addListener(() => { schedule(); });
-chrome.runtime.onStartup.addListener(() => { schedule(); });
+chrome.runtime.onInstalled.addListener(() => { initAction(); schedule(); });
+chrome.runtime.onStartup.addListener(() => { initAction(); schedule(); });
 chrome.alarms.onAlarm.addListener((a) => { if (a.name === 'scan') scan(false); else if (a.name === 'update') autoUpdate(); });
-chrome.action.onClicked.addListener(() => chrome.runtime.openOptionsPage());
 chrome.storage.onChanged.addListener((ch, area) => { if (area === 'sync' && ch.intervalMin) schedule(); });
 
 chrome.runtime.onMessage.addListener((msg, _s, send) => {
