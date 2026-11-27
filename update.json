@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0",
+  "version": "2.0.1",
   "files": [
     "manifest.json",
     "background.js",
@@ -7,5 +7,5 @@
     "options.html",
     "options.js"
   ],
-  "notes": "Bản đầu có tự cập nhật; trả hàng chỉ báo khi ĐVVC giao về shop."
+  "notes": "Sửa nút Chọn thư mục extension trong Cài đặt."
 }

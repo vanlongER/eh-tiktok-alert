@@ -15,7 +15,9 @@ $('save').onclick = async () => {
   say('Đã lưu.');
 };
 $('test').onclick = async () => { await $('save').onclick(); say('Đang gửi thử...'); const r = await chrome.runtime.sendMessage({ type: 'test' }); say(r && r.ok ? 'Gửi thử OK, kiểm tra Telegram.' : 'Lỗi: ' + (r && r.err)); };
-$('scan').onclick = async () => { await $('save').onclick(); say('Đang quét (khoảng 30 giây)...'); const r = await chrome.runtime.sendMessage({ type: 'scanNow' }); say(r && r.ok ? 'Quét xong.' : 'Không quét được: ' + (r && r.err)); $('pickdir').onclick = async () => {
+$('scan').onclick = async () => { await $('save').onclick(); say('Đang quét (khoảng 30 giây)...'); const r = await chrome.runtime.sendMessage({ type: 'scanNow' }); say(r && r.ok ? 'Quét xong.' : 'Không quét được: ' + (r && r.err)); load(); };
+$('reset').onclick = async () => { await chrome.runtime.sendMessage({ type: 'reset' }); say('Đã xoá. Lần quét sau sẽ gửi lại tin "Bắt đầu theo dõi".'); };
+$('pickdir').onclick = async () => {
   try {
     const h = await showDirectoryPicker({ id: 'ehext', mode: 'readwrite' });
     let okManifest = false;
@@ -31,6 +33,4 @@ $('upd').onclick = async () => { $('updmsg').textContent = 'Đang kiểm tra...'
   const l = await chrome.storage.local.get('lastUpdateCheck');
   $('updmsg').textContent = (d ? 'Thư mục đã chọn: ' + d.name + '. ' : 'Chưa chọn thư mục. ') + (l.lastUpdateCheck ? 'Lần kiểm tra gần nhất: ' + l.lastUpdateCheck.status : '');
 })();
-load(); };
-$('reset').onclick = async () => { await chrome.runtime.sendMessage({ type: 'reset' }); say('Đã xoá. Lần quét sau sẽ gửi lại tin "Bắt đầu theo dõi".'); };
 load();
