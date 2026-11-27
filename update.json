@@ -1,0 +1,11 @@
+{
+  "version": "2.0.0",
+  "files": [
+    "manifest.json",
+    "background.js",
+    "updater.js",
+    "options.html",
+    "options.js"
+  ],
+  "notes": "Bản đầu có tự cập nhật; trả hàng chỉ báo khi ĐVVC giao về shop."
+}
