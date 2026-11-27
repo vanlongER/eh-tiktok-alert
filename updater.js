@@ -41,8 +41,9 @@ async function checkUpdate(force) {
       if (!/^[\w.\-]+$/.test(f)) return { ok: false, status: 'Tên file không hợp lệ: ' + f };
       const fr = await fetch(base + f + '?t=' + Date.now(), { cache: 'no-store' });
       if (!fr.ok) return { ok: false, status: 'Không tải được ' + f };
-      const tx = await fr.text();
-      if (!tx.trim()) return { ok: false, status: 'File rỗng: ' + f };
+      const bin = /\.(png|jpg|jpeg|gif|ico|webp)$/i.test(f);
+      const tx = bin ? await fr.arrayBuffer() : await fr.text();
+      if (bin ? tx.byteLength === 0 : !tx.trim()) return { ok: false, status: 'File rỗng: ' + f };
       files.push([f, tx]);
     }
     files.sort((a, b) => (a[0] === 'manifest.json') - (b[0] === 'manifest.json')); // manifest ghi sau cùng

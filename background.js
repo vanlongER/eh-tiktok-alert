@@ -1,4 +1,27 @@
 importScripts('updater.js');
+
+// ---------- icon vẽ bằng code: tròn xanh chữ EH, chấm đỏ khi có việc cần xử lý ----------
+function drawIcon(size, alert) {
+  const c = new OffscreenCanvas(size, size);
+  const g = c.getContext('2d');
+  g.fillStyle = '#0a7d5a';
+  g.beginPath(); g.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2); g.fill();
+  g.fillStyle = '#ffffff';
+  g.font = 'bold ' + Math.round(size * 0.46) + 'px Arial, sans-serif';
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText('EH', size / 2, size / 2 + size * 0.03);
+  if (alert) {
+    g.fillStyle = '#e53935';
+    g.beginPath(); g.arc(size * 0.78, size * 0.22, size * 0.2, 0, Math.PI * 2); g.fill();
+    g.strokeStyle = '#ffffff'; g.lineWidth = Math.max(1, size * 0.05); g.stroke();
+  }
+  return g.getImageData(0, 0, size, size);
+}
+function setIcon(alert) {
+  try { chrome.action.setIcon({ imageData: { 16: drawIcon(16, alert), 32: drawIcon(32, alert), 48: drawIcon(48, alert) } }); } catch (e) {}
+}
+setIcon(false);
+try { chrome.action.setBadgeBackgroundColor({ color: '#e53935' }); } catch (e) {}
 // EH TikTok Báo Trả Hàng - MV3 service worker
 // Quét định kỳ trang Quản lý trả hàng (chỉ ĐỌC), báo Telegram. Không bấm gì trên Seller Center.
 
@@ -389,6 +412,7 @@ async function scan(manual) {
     lastScan: { at: now, status: 'OK – chờ bạn ' + pend.pendingCount + ', cần bằng chứng ' + appeal.evidenceCount + ', phản hồi mới ' + appeal.replyCount + (tix && tix.rows ? ', phiếu ' + tix.rows.length : (tix && tix.err ? ' (lỗi phiếu: ' + tix.err + ')' : '')) + (sent === false ? ' (gửi Telegram lỗi)' : '') }
   });
   await chrome.action.setBadgeText({ text: (appeal.evidenceCount + appeal.replyCount) > 0 ? String(appeal.evidenceCount + appeal.replyCount) : '' });
+  setIcon((appeal.evidenceCount + appeal.replyCount) > 0);
   return { ok: true };
 }
 

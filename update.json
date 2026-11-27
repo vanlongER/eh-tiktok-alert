@@ -1,5 +1,5 @@
 {
-  "version": "2.0.1",
+  "version": "2.0.2",
   "files": [
     "manifest.json",
     "background.js",
@@ -7,5 +7,5 @@
     "options.html",
     "options.js"
   ],
-  "notes": "Sửa nút Chọn thư mục extension trong Cài đặt."
+  "notes": "Icon mới: tròn xanh EH, chấm đỏ khi có khiếu nại cần xử lý."
 }
